@@ -7,21 +7,20 @@ class WeatherViewModel: ObservableObject {
     @Published var weatherState: WeatherState = .idle
     @Published var errorMessage: String?
     
-    private var weatherManager = WeatherManager()
+    private var weatherManager = WeatherService()
     
     
     enum WeatherState: Equatable {
         case idle, loading, success, error
     }
-
+    
     func loadWeather(latitude: Double, longitude: Double) async {
         weatherState = .loading
         
-        do {
-            let fetchedWeather = try await weatherManager.getCurrentWeather(latitude: latitude, longitud: longitude)
+        if let fetchedWeather = try? await weatherManager.getCurrentWeather(latitude: latitude, longitud: longitude) {
             weather = fetchedWeather
             weatherState = .success
-        } catch {
+        } else {
             errorMessage = "Error fetching weather data"
             weatherState = .error
         }
