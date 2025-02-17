@@ -2,62 +2,61 @@ import SwiftUI
 
 struct SearchView: View {
     
-    @StateObject var locationManager = LocationManager()
-    var weatherManager = WeatherService()
-    @State var weather: ResponseBody?
-    @State var cityName = ""
-    @State private var showBottomSheet = false
-    @State private var isLoading = false
+    @StateObject var searchViewModel = SearchViewModel()
+    
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        
         VStack {
             Text("Weather")
                 .font(.system(size: 40, weight: .bold))
+                .foregroundColor(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .bold()
-                .padding()
+                .padding(.top, 20)
+                .padding(.horizontal)
             
-            TextField("Search City", text: $cityName)
+            TextField("Enter City", text: $searchViewModel.cityName)
                 .padding()
-                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .submitLabel(.search)
                 .onSubmit {
-                    performSearch()
+                    searchViewModel.performSearch()
                 }
+            
                 .padding(.horizontal)
+                .background(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
+                .padding(.bottom, 20)
             
             Spacer()
             
-            if isLoading {
+            if searchViewModel.isLoading {
                 ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                    .scaleEffect(2)
             }
         }
-        .sheet(isPresented: $showBottomSheet) {
-            if let weather = weather {
+        .sheet(isPresented: $searchViewModel.showBottomSheet) {
+            if let weather = searchViewModel.weather {
                 CityWeatherView(weather: weather)
             }
         }
         .navigationTitle("")
-    }
-    
-    private func performSearch() {
-        isLoading = true
-        
-        Task {
-            do {
-                let fetchedWeather = try await weatherManager.getWeatherByCityName(cityName: cityName)
-                weather = fetchedWeather
-                showBottomSheet = true
-            } catch {
-                print("Error fetching weather: \(error)")
-            }
-            isLoading = false
-        }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: Button(action: {
+            self.presentationMode.wrappedValue.dismiss()
+            
+        }) {
+            Image(systemName: "chevron.left")
+                .foregroundColor(.black)
+        })
+        .padding()
+        .background(
+            LinearGradient(gradient: Gradient(colors: [Color.grayn, Color.grayn]),
+                           startPoint: .top,
+                           endPoint: .bottom)
+            .edgesIgnoringSafeArea(.all))
     }
 }
 
 #Preview {
     SearchView()
 }
-

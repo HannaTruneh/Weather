@@ -1,10 +1,3 @@
-//
-//  WeatherRow.swift
-//  Weather
-//
-//  Created by Shay Shimony on 09/02/2025.
-//
-
 import SwiftUI
 
 struct WeatherRow: View {
@@ -20,7 +13,7 @@ struct WeatherRow: View {
                 .padding()
                 .background(Color(hue: 1.0, saturation: 0.0, brightness: 0.888))
                 .cornerRadius(50)
-
+            
             
             VStack(alignment: .leading, spacing: 8) {
                 Text(name)

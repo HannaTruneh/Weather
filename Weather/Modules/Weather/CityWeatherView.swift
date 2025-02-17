@@ -25,7 +25,7 @@ struct CityWeatherView: View {
                             .font(.title2)
                     }
                     .foregroundColor(Color.lightBlue)
-
+                    
                     Spacer()
                         .padding(.all)
                         .frame(maxWidth: .infinity)
@@ -59,7 +59,8 @@ struct CityWeatherView: View {
                         .padding(.bottom, 20)
                         .foregroundColor(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
                         .background(.white)
-                        .cornerRadius(20, corners: [.topLeft, .topRight])
+                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .path(in: CGRect(x: 0, y: 0, width: 415, height: 300)))
                     }
                 }
             }
